@@ -1,0 +1,12 @@
+.navbar {
+    margin-bottom: 0;
+}
+
+.jumbotron {
+    height: 400px;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
