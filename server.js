@@ -44,6 +44,7 @@ db.once("open", function() {
 
 // A GET request to scrape the echojs website
 app.get("/scrape", function(req, res) {
+  Article.remove().exec();
   request("https://www.nytimes.com/section/world?WT.nav=page&action=click&contentCollection=World&module=HPMiniNav&pgtype=Homepage&region=TopBar", function(error, response, html) {
     var $ = cheerio.load(html);
     $(".story-link").each(function(i, element) {
@@ -75,7 +76,9 @@ app.get("/scrape", function(req, res) {
 // This will get the articles we scraped from the mongoDB
 app.get("/articles", function(req, res) {
   // Grab every doc in the Articles array
-  Article.find({}, function(error, doc) {
+  Article.find({
+      saved: false
+  }, function(error, doc) {
     // Log any errors
     if (error) {
       console.log(error);
@@ -85,6 +88,23 @@ app.get("/articles", function(req, res) {
       res.json(doc);
     }
   });
+});
+
+// This will get the articles we scraped from the mongoDB
+app.get("/saved", function (req, res) {
+    // Grab every doc in the Articles array
+    Article.find({
+        saved: true
+    }, function (error, doc) {
+        // Log any errors
+        if (error) {
+            console.log(error);
+        }
+        // Or send the doc to the browser as a json object
+        else {
+            res.json(doc);
+        }
+    });
 });
 
 // Grab an article by it's ObjectId
